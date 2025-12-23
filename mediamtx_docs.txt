@@ -1,0 +1,76 @@
+wget https://github.com/bluenviron/mediamtx/releases/download/v1.0.0/mediamtx_v1.0.0_linux_amd64.tar.gz
+mkdir mediamtx_v1
+mv mediamtx_v1.0.0_linux_amd64.tar.gz mediamtx_v1
+cd mediamtx_v1/
+tar -xzf mediamtx_v1.0.0_linux_amd64.tar.gz
+ls
+chmod +x mediamtx
+mv mediamtx.yml mediamtx_default.yml
+nano mediamtx.yml
+
+# Optimized MediaMTX Configuration for WebRTC Streaming (GPU-VM)
+logLevel: info
+
+# DISABLE unused protocols to save CPU
+rtsp: yes
+rtspAddress: :8554
+rtmp: no
+hls: yes
+webrtc: yes
+
+# WebRTC Settings - Primary streaming method
+webrtcAddress: :8889
+webrtcAllowOrigin: "*"  # Will be controlled by nginx proxy
+webrtcTrustedProxies:
+  - "100.64.0.0/10" # Tailscale network
+  - "192.168.0.0/16" # Local networks
+
+# HLS Settings - Fallback only
+hlsAddress: :8888
+hlsAlwaysRemux: true
+hlsVariant: fmp4
+hlsSegmentCount: 3
+hlsSegmentDuration: 1s
+hlsAllowOrigin: "*"
+hlsTrustedProxies:
+  - "100.64.0.0/10" # Tailscale network
+  - "192.168.0.0/16" # Local networks
+
+
+# Camera paths with authentication
+paths:
+  camera1:
+    source: publisher
+    #source: rtsp://admin:administrator@192.168.0.101:554/ch0_0.264
+    #sourceOnDemand: yes
+    runOnDemand: ffmpeg -fflags nobuffer -flags low_delay -i rtsp://admin:administrator@192.168.0.101:554/ch0_0.264 -r 5 -c:v libx264 -preset ultrafast -tune zerolatency -profile:v baseline -level 3.1 -pix_fmt yuv420p -g 10 -keyint_min 10 -sc_threshold 0 -bufsize 256k -maxrate 500k -c:a aac -ar 44100 -b:a 64k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/$MTX_PATH
+    runOnDemandRestart: yes
+
+  camera2:
+    source: publisher
+    #source: rtsp://admin:administrator@192.168.0.102:554/ch0_0.264
+    #sourceOnDemand: yes
+    runOnDemand: ffmpeg -fflags nobuffer -flags low_delay -i rtsp://admin:administrator@192.168.0.102:554/ch0_0.264 -r 5 -c:v libx264 -preset ultrafast -tune zerolatency -profile:v baseline -level 3.1 -pix_fmt yuv420p -g 10 -keyint_min 10 -sc_threshold 0 -bufsize 256k -maxrate 500k -c:a aac -ar 44100 -b:a 64k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/$MTX_PATH
+    runOnDemandRestart: yes
+
+mediamtx.service
+[Unit]
+Description=MediaMTX RTSP/WebRTC Server
+Documentation=https://github.com/bluenviron/mediamtx
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=user
+ExecStart=/home/user/mediamtx_v1/mediamtx /home/user/mediamtx_v1/mediamtx.yml
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/mediamtx.log
+StandardError=append:/var/log/mediamtx.error.log
+
+[Install]
+WantedBy=multi-user.target
+
+
+
