@@ -53,7 +53,7 @@ WantedBy=multi-user.target
 
 Use this below commands to start the mediamtx
 *********************************************
-sudo systemctl daemon-reload \n
+sudo systemctl daemon-reload 
 sudo systemctl enable mediamtx
 sudo systemctl start mediamtx
 
