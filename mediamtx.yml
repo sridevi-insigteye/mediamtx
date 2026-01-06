@@ -31,14 +31,14 @@ hlsTrustedProxies:
 paths:
   camera1:
     source: publisher
-    #source: rtsp://admin:administrator@192.168.0.101:554/ch0_0.264
+    #source: rtsp://admin:administrator@192.168.29.212:554/ch0_0.264
     #sourceOnDemand: yes
-    runOnDemand: ffmpeg -fflags nobuffer -flags low_delay -i rtsp://admin:administrator@192.168.0.101:554/ch0_0.264 -r 5 -c:v libx264 -preset ultrafast -tune zerolatency -profile:v baseline -level 3.1 -pix_fmt yuv420p -g 10 -keyint_min 10 -sc_threshold 0 -bufsize 256k -maxrate 500k -c:a aac -ar 44100 -b:a 64k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/$MTX_PATH
+    runOnDemand: ffmpeg -fflags nobuffer -flags low_delay -i rtsp://admin:administrator@192.168.29.212:554/ch0_0.264 -r 5 -c:v libx264 -preset ultrafast -tune zerolatency -profile:v baseline -level 3.1 -pix_fmt yuv420p -g 10 -keyint_min 10 -sc_threshold 0 -bufsize 256k -maxrate 500k -c:a aac -ar 44100 -b:a 64k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/$MTX_PATH
     runOnDemandRestart: yes
 
   camera2:
     source: publisher
-    #source: rtsp://admin:administrator@192.168.0.102:554/ch0_0.264
+    #source: rtsp://admin:administrator@192.168.29.100:554/ch0_0.264
     #sourceOnDemand: yes
-    runOnDemand: ffmpeg -fflags nobuffer -flags low_delay -i rtsp://admin:administrator@192.168.0.102:554/ch0_0.264 -r 5 -c:v libx264 -preset ultrafast -tune zerolatency -profile:v baseline -level 3.1 -pix_fmt yuv420p -g 10 -keyint_min 10 -sc_threshold 0 -bufsize 256k -maxrate 500k -c:a aac -ar 44100 -b:a 64k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/$MTX_PATH
+    runOnDemand: ffmpeg -fflags nobuffer -flags low_delay -i rtsp://admin:administrator@192.168.29.100:554/ch0_0.264 -r 5 -c:v libx264 -preset ultrafast -tune zerolatency -profile:v baseline -level 3.1 -pix_fmt yuv420p -g 10 -keyint_min 10 -sc_threshold 0 -bufsize 256k -maxrate 500k -c:a aac -ar 44100 -b:a 64k -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:8554/$MTX_PATH
     runOnDemandRestart: yes
